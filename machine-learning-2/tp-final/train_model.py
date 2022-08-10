@@ -7,10 +7,8 @@ from utils import report_scores
 from constants import RANDOM_STATE
 
 # Cargar Dataset
-# df = pd.read_csv("data.csv")
-df = pd.read_csv(
-    "/tf/notebooks/CEIA/machine-learning-1/tp-final/HR-Employee-Attrition.csv"
-)
+df = pd.read_csv("data.csv")
+# df = pd.read_csv("/tf/notebooks/CEIA/machine-learning-2/tp-final/data.csv")
 df = preprocess_dataset(df)
 
 # Entrenamiento del modelo

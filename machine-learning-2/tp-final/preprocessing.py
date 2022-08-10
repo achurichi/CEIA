@@ -8,8 +8,8 @@ from constants import RANDOM_STATE, CATEGORICAL_VARIABLES, COLUMNS_TO_REMOVE
 
 def split(df):
     # Definimos la variable objetivo a predecir (y) y las feature (X)
-    y = df["Attrition"]
-    X = df.drop("Attrition", axis=1)
+    y = df["attrition"]
+    X = df.drop("attrition", axis=1)
 
     # Dividimos el set de datos en entrenamiento y testeo
     X_train, X_test, y_train, y_test = train_test_split(
@@ -29,10 +29,10 @@ def preprocess_dataset(df):
     df.drop(COLUMNS_TO_REMOVE, axis=1, inplace=True)
 
     # Convertir variables categoricas
-    df["Attrition"] = df["Attrition"].replace(to_replace=["No", "Yes"], value=[0, 1])
-    df["OverTime"] = df["OverTime"].replace(to_replace=["No", "Yes"], value=[0, 1])
-    df["Gender"] = df["Gender"].replace(to_replace=["Male", "Female"], value=[0, 1])
-    df["BusinessTravel"] = df["BusinessTravel"].replace(
+    df["attrition"] = df["attrition"].replace(to_replace=["No", "Yes"], value=[0, 1])
+    df["overtime"] = df["overtime"].replace(to_replace=["No", "Yes"], value=[0, 1])
+    df["gender"] = df["gender"].replace(to_replace=["Male", "Female"], value=[0, 1])
+    df["businesstravel"] = df["businesstravel"].replace(
         to_replace=["Non-Travel", "Travel_Rarely", "Travel_Frequently"], value=[0, 0, 1]
     )
 
@@ -54,6 +54,6 @@ def preprocess_dataset(df):
     feature_importances.sort_values("feature_importance", ascending=False, inplace=True)
 
     important_columns = feature_importances.iloc[:20]["features"].to_numpy()
-    important_columns = np.append(important_columns, ["Attrition"])
+    important_columns = np.append(important_columns, ["attrition"])
 
     return df[important_columns]
