@@ -1,0 +1,24 @@
+[
+	{
+		"age": 40,
+		"distancefromhome": 4,
+		"education": 3,
+		"environmentsatisfaction": 1,
+		"jobinvolvement": 2,
+		"joblevel": 2,
+		"jobsatisfaction": 3,
+		"monthlyincome": 4000,
+		"numcompaniesworked": 2,
+		"overtime": 0,
+		"percentsalaryhike": 11,
+		"relationshipsatisfaction": 4,
+		"stockoptionlevel": 0,
+		"totalworkingyears": 10,
+		"trainingtimeslastyear": 2,
+		"worklifebalance": 3,
+		"yearsatcompany": 6,
+		"yearsincurrentrole": 3,
+		"yearssincelastpromotion": 2,
+		"yearswithcurrmanager": 2
+	}
+]
