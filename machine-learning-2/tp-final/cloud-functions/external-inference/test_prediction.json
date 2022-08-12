@@ -4,9 +4,9 @@
 		"distancefromhome": 4,
 		"education": 3,
 		"environmentsatisfaction": 1,
-		"jobinvolvement": 2,
 		"joblevel": 2,
 		"jobsatisfaction": 3,
+		"maritalstatussingle": 1,
 		"monthlyincome": 4000,
 		"numcompaniesworked": 2,
 		"overtime": 0,
@@ -20,5 +20,27 @@
 		"yearsincurrentrole": 3,
 		"yearssincelastpromotion": 2,
 		"yearswithcurrmanager": 2
+	},
+	{
+		"age": 25,
+		"distancefromhome": 100,
+		"education": 3,
+		"environmentsatisfaction": 1,
+		"joblevel": 4,
+		"jobsatisfaction": 1,
+		"maritalstatussingle": 0,
+		"monthlyincome": 10,
+		"numcompaniesworked": 2,
+		"overtime": 0,
+		"percentsalaryhike": 5,
+		"relationshipsatisfaction": 1,
+		"stockoptionlevel": 0,
+		"totalworkingyears": 6,
+		"trainingtimeslastyear": 2,
+		"worklifebalance": 4,
+		"yearsatcompany": 1,
+		"yearsincurrentrole": 1,
+		"yearssincelastpromotion": 1,
+		"yearswithcurrmanager": 1
 	}
 ]
