@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
-from constants import RANDOM_STATE, CATEGORICAL_VARIABLES, COLUMNS_TO_REMOVE
+from constants import RANDOM_STATE, CATEGORICAL_VARIABLES, VARIABLES_TO_KEEP
 
 
 def split(df):
@@ -25,35 +24,18 @@ def split(df):
 
 
 def preprocess_dataset(df):
-    # Eliminar columnas que no aportan informacion
-    df.drop(COLUMNS_TO_REMOVE, axis=1, inplace=True)
-
     # Convertir variables categoricas
     df["attrition"] = df["attrition"].replace(to_replace=["No", "Yes"], value=[0, 1])
     df["overtime"] = df["overtime"].replace(to_replace=["No", "Yes"], value=[0, 1])
-    df["gender"] = df["gender"].replace(to_replace=["Male", "Female"], value=[0, 1])
-    df["businesstravel"] = df["businesstravel"].replace(
-        to_replace=["Non-Travel", "Travel_Rarely", "Travel_Frequently"], value=[0, 0, 1]
-    )
 
     df_numerical = df.drop(columns=CATEGORICAL_VARIABLES, axis=1)
-    df_categorical = pd.get_dummies(df.drop(columns=df_numerical.columns))
+    df_categorical = pd.get_dummies(df[CATEGORICAL_VARIABLES], prefix_sep="")
+    df_categorical = df_categorical.rename(columns=str.lower)
+
     df = pd.concat([df_numerical, df_categorical], axis=1)
 
-    # Random Forest para sacar las 20 features mas importantes
-    X_train, _, y_train, _ = split(df)
+    # Nos quedamos solamente con las columnas que aportan informacion
+    df = df[VARIABLES_TO_KEEP]
+    df = df.reindex(sorted(df.columns), axis=1)
 
-    model = RandomForestClassifier(
-        n_estimators=10, class_weight="balanced", random_state=RANDOM_STATE
-    )
-    model.fit(X_train, y_train)
-
-    feature_importances = pd.DataFrame(
-        {"features": X_train.columns, "feature_importance": model.feature_importances_}
-    )
-    feature_importances.sort_values("feature_importance", ascending=False, inplace=True)
-
-    important_columns = feature_importances.iloc[:20]["features"].to_numpy()
-    important_columns = np.append(important_columns, ["attrition"])
-
-    return df[important_columns]
+    return df

@@ -8,7 +8,7 @@ from constants import RANDOM_STATE
 
 # Cargar Dataset
 df = pd.read_csv("data.csv")
-# df = pd.read_csv("/tf/notebooks/CEIA/machine-learning-2/tp-final/data.csv")
+# df = pd.read_csv("/tf/notebooks/CEIA/machine-learning-2/tp-final/training/data.csv")
 df = preprocess_dataset(df)
 
 # Entrenamiento del modelo
