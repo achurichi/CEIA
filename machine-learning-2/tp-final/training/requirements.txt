@@ -3,3 +3,5 @@ pandas
 mlflow
 sklearn
 imblearn
+google-cloud-storage
+psycopg2-binary
