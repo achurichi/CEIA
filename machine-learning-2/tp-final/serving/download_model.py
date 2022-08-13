@@ -1,3 +1,5 @@
+import mlflow
+from mlflow.tracking import MlflowClient
 from pathlib import Path
 from google.cloud import storage
 
@@ -15,4 +17,16 @@ def download_files(bucket_name, bucket_dir):
         blob.download_to_filename(blob.name)
 
 
-download_files("ml2-model-bucket", "mlruns/")
+connection_string = (
+    "postgresql+psycopg2://postgres:<db-password>@<db-public-ip>:5432/postgres"
+)
+
+mlflow.set_tracking_uri(connection_string)
+mlflow.set_registry_uri(connection_string)
+client = MlflowClient()
+
+model_path = client.get_latest_versions(
+    name="sk-learn-logistic-regression", stages=["Production"]
+)[0].source
+
+download_files("ml2-model-bucket", model_path)
