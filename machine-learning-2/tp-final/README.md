@@ -4,7 +4,10 @@ Alumnos: Alan Churichi, Juan Pabalo Alianak
 
 ## Caso de Negocio
 
-...
+Las personas son el mayor activo que tiene una empresa, gestionar los recursos
+humanos de manera efectiva resulta imprescindible para evitar su fuga.
+
+El modelo planteado busca ser consumido por el área de recursos humanos de medianas y grandes empresas, de manera de poder analizar en simultaneo un gran numero de empleados y trabajar de forma personalizada con aquellos que el modelo detecta como desgastados.
 
 ## Arquitectura
 
@@ -58,7 +61,6 @@ Ejemplo:
 
 ```
 curl -m 15 -X POST https://us-west2-ceia-machine-learning-2.cloudfunctions.net/ml2-external-inference \
--H "Authorization:bearer $(gcloud auth print-identity-token)" \
 -H "Content-Type:application/json" \
 -d '{
 	"user_id": 1,
@@ -86,8 +88,7 @@ curl -m 15 -X POST https://us-west2-ceia-machine-learning-2.cloudfunctions.net/m
 			"yearswithcurrmanager": 2
 		}
 	]
-}
-'
+}'
 ```
 
 ### Aplicación Web (no implementado)
@@ -96,8 +97,19 @@ Aplicación Web donde el usuario puede cargar los datos requeridos para realizar
 
 ## Futuras Mejoras
 
-...
+- Implementar una UI para que el modelo sea consumido de manera organica.
+- Guardar métricas de entrenamiento.
+- Generar un ambiente de staging para probar los modelos.
+- Podes servir la UI de Mlflow de manera remota.
+- Automatizar el deploy de modelos de entrenamiento.
+- Encender la VM de entrenamiento a intervalos predefinidos para ahorrar recursos.
 
 ## Conclusiones
 
-...
+Con la solucion implementada, el area de recursos humanos de una empresa puede generar inferencias en base a los datos de sus empleados y analizar el desgaste de ellos.
+
+Logramos servir un modelo en produccion utilizando Google Cloud como proveedor de servicios en la nube.
+
+El modelo puede ser accedido desde cualquier computadora conectada a internet, generar inferencias y almacenar los resultados.
+
+La arquitectura diseñada es escalable, adaptandose a cambios de tipo y/o tamaño de modelos.
