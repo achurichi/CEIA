@@ -11,6 +11,7 @@
 	"idf.flashType": "JTAG",
 	"files.associations": {
 		"uart.h": "c",
-		"system_error": "c"
+		"system_error": "c",
+		"esp_console.h": "c"
 	}
 }

@@ -33,6 +33,6 @@ void app_main(void)
     printf("\nReceived: %s\n", message);
 
     for (int i = 0; i < MESSAGE_MAX_LEN; i++)
-      message[0] = '\0';
+      message[i] = '\0';
   }
 }
