@@ -8,38 +8,45 @@
 
 #define MESSAGE_MAX_LEN 10
 
+static QueueHandle_t uart_queue;
+
+static void uart_task(void *arg)
+{
+  uint8_t *data = (uint8_t *)malloc(MESSAGE_MAX_LEN);
+  uart_event_t event;
+
+  for (;;)
+  {
+    if (xQueueReceive(uart_queue, &event, portMAX_DELAY))
+    {
+      switch (event.type)
+      {
+      case UART_DATA:
+      {
+        int len = uart_read_bytes(CONFIG_ESP_CONSOLE_UART_NUM, data, event.size, portMAX_DELAY);
+        if (len)
+        {
+          *(data + event.size) = '\0';
+          uart_write_bytes(CONFIG_ESP_CONSOLE_UART_NUM, (char *)data, strlen((char *)data));
+        }
+      }
+      break;
+      default:
+        break;
+      }
+    }
+  }
+}
+
 void app_main(void)
 {
-  setvbuf(stdin, NULL, _IONBF, 0);
-  setvbuf(stdout, NULL, _IONBF, 0);
-  ESP_ERROR_CHECK(uart_driver_install(CONFIG_ESP_CONSOLE_UART_NUM, 256, 0, 0, NULL, 0));
+  ESP_ERROR_CHECK(uart_driver_install(CONFIG_ESP_CONSOLE_UART_NUM, 256, 0, 32, &uart_queue, 0));
   esp_vfs_dev_uart_use_driver(CONFIG_ESP_CONSOLE_UART_NUM);
-  esp_vfs_dev_uart_port_set_rx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CR);
-  esp_vfs_dev_uart_port_set_tx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CRLF);
 
-  char message[MESSAGE_MAX_LEN];
-  int messageLen = 0;
-  uint8_t data;
-  int rxBytes = 0;
+  xTaskCreate(uart_task, "uart_event_task", 2048, NULL, 12, NULL);
 
   while (1)
   {
-    rxBytes = uart_read_bytes(CONFIG_ESP_CONSOLE_UART_NUM, &data, 1, 20);
-    if (rxBytes > 0)
-    {
-      char chr = (char)data;
-      message[messageLen] = chr;
-      if (chr == '\n')
-      {
-        uart_write_bytes(CONFIG_ESP_CONSOLE_UART_NUM, message, strlen(message));
-        for (int i = 0; i < MESSAGE_MAX_LEN; i++)
-          message[i] = '\0';
-        messageLen = 0;
-      }
-      else
-      {
-        messageLen++;
-      }
-    }
+    vTaskDelay(100);
   }
 }
