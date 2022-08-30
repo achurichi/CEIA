@@ -18,21 +18,28 @@ void app_main(void)
   esp_vfs_dev_uart_port_set_tx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CRLF);
 
   char message[MESSAGE_MAX_LEN];
-  char chr;
+  int messageLen = 0;
+  uint8_t data;
+  int rxBytes = 0;
 
   while (1)
   {
-    for (int i = 0; i < MESSAGE_MAX_LEN; i++)
+    rxBytes = uart_read_bytes(CONFIG_ESP_CONSOLE_UART_NUM, &data, 1, 20);
+    if (rxBytes > 0)
     {
-      scanf("%c", &chr);
+      char chr = (char)data;
+      message[messageLen] = chr;
       if (chr == '\n')
-        break;
-      message[i] = chr;
+      {
+        uart_write_bytes(CONFIG_ESP_CONSOLE_UART_NUM, message, strlen(message));
+        for (int i = 0; i < MESSAGE_MAX_LEN; i++)
+          message[i] = '\0';
+        messageLen = 0;
+      }
+      else
+      {
+        messageLen++;
+      }
     }
-
-    printf("\nReceived: %s\n", message);
-
-    for (int i = 0; i < MESSAGE_MAX_LEN; i++)
-      message[i] = '\0';
   }
 }
