@@ -1,52 +1,36 @@
 #include <stdio.h>
 #include <string.h>
-#include "esp_system.h"
-#include "esp_console.h"
-#include "esp_vfs_dev.h"
-#include "esp_vfs_fat.h"
 #include "driver/uart.h"
+#include "soc/uart_reg.h"
+#include "soc/uart_struct.h"
 
-#define MESSAGE_MAX_LEN 10
+static intr_handle_t handle_console;
 
-static QueueHandle_t uart_queue;
-
-static void uart_task(void *arg)
+static void IRAM_ATTR uart_intr_handle(void *arg)
 {
-  uint8_t *data = (uint8_t *)malloc(MESSAGE_MAX_LEN);
-  uart_event_t event;
-
-  for (;;)
+  uint8_t len = UART0.status.rxfifo_cnt;
+  uint8_t i = 0;
+  uint8_t *data = (uint8_t *)malloc(len + 1);
+  data[len] = '\0';
+  while (len)
   {
-    if (xQueueReceive(uart_queue, &event, portMAX_DELAY))
-    {
-      switch (event.type)
-      {
-      case UART_DATA:
-      {
-        int len = uart_read_bytes(CONFIG_ESP_CONSOLE_UART_NUM, data, event.size, portMAX_DELAY);
-        if (len)
-        {
-          *(data + event.size) = '\0';
-          uart_write_bytes(CONFIG_ESP_CONSOLE_UART_NUM, (char *)data, strlen((char *)data));
-        }
-      }
-      break;
-      default:
-        break;
-      }
-    }
+    data[i++] = UART0.fifo.rw_byte;
+    len--;
   }
+  uart_write_bytes(UART_NUM_0, (char *)data, strlen((char *)data));
+  uart_flush(UART_NUM_0);
+  uart_clear_intr_status(UART_NUM_0, UART_RXFIFO_FULL_INT_CLR | UART_RXFIFO_TOUT_INT_CLR);
 }
 
 void app_main(void)
 {
-  ESP_ERROR_CHECK(uart_driver_install(CONFIG_ESP_CONSOLE_UART_NUM, 256, 0, 32, &uart_queue, 0));
-  esp_vfs_dev_uart_use_driver(CONFIG_ESP_CONSOLE_UART_NUM);
-
-  xTaskCreate(uart_task, "uart_event_task", 2048, NULL, 12, NULL);
+  ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, 256, 0, 0, NULL, 0));
+  uart_isr_free(UART_NUM_0);
+  uart_isr_register(UART_NUM_0, uart_intr_handle, NULL, ESP_INTR_FLAG_IRAM, &handle_console);
+  uart_enable_rx_intr(UART_NUM_0);
 
   while (1)
   {
-    vTaskDelay(100);
+    vTaskDelay(1000);
   }
 }
