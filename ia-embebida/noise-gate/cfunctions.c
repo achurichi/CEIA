@@ -1,51 +1,35 @@
 #include <stdio.h>
 #include <stdbool.h>
-
-#define VALUE_MAX 32767
-#define VALUE_MIN -32768
+#include <stdint.h>
 
 typedef struct
 {
-  float open;
-  float close;
-  float hold;
-  int samplerate;
+  uint16_t open;
+  uint16_t close;
+  uint32_t samplesHold;
+  uint32_t openCounter;
+  bool isOpen;
 } Config;
 
-typedef struct
+uint16_t toUint16(int value)
 {
-  int lastIdxOpen;
-  bool isOpen;
-} PrevData;
-
-typedef struct
-{
-  int output;
-  bool keepOpen;
-} Result;
-
-float normalize(float value)
-{
-  return (value - VALUE_MIN) / (VALUE_MAX - VALUE_MIN);
+  return value + 32768;
 }
 
-Result noiseGate(int sample, int idx, PrevData prevData, Config config)
+bool noiseGate(uint16_t sample, Config *config)
 {
-  float sampleSquare = normalize((float)sample) * normalize((float)sample);
-  float open = normalize(config.open) * normalize(config.open);
-  float close = normalize(config.close) * normalize(config.close);
-  int samplesHold = (int)(config.hold * config.samplerate);
-  Result result;
-  result.keepOpen = prevData.isOpen;
+  if (sample >= config->open)
+  {
+    config->isOpen = true;
+    config->openCounter = 0;
+  }
+  else if (config->isOpen)
+  {
+    if (sample < config->close && config->openCounter >= config->samplesHold)
+      config->isOpen = false;
+    else
+      config->openCounter++;
+  }
 
-  if (sampleSquare >= open)
-    result.keepOpen = true;
-  else if (prevData.isOpen &&
-           sampleSquare < close &&
-           idx > prevData.lastIdxOpen + samplesHold)
-    result.keepOpen = false;
-
-  result.output = result.keepOpen ? sample : 0;
-
-  return result;
+  return config->isOpen;
 }
