@@ -42,6 +42,7 @@ void app_main(void)
   config.open = toUint16(OPEN_LIMIT);
   config.close = toUint16(CLOSE_LIMIT);
   config.samplesHold = HOLD * SAMPLERATE;
+  config.openCounter = 0;
   config.isOpen = false;
 
   ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, 256, 0, 0, NULL, 0));
