@@ -1,4 +1,6 @@
 .vscode/*
 __pycache__/
 mlruns/
+runs/
+dataset-audio/
 computer-vision-1/tp5/assets/*.avi
