@@ -3,4 +3,5 @@ __pycache__/
 mlruns/
 runs/
 dataset-audio/
+yolov7-pretrained/
 computer-vision-1/tp5/assets/*.avi
