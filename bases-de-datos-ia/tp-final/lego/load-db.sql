@@ -1,3 +1,5 @@
+CREATE SCHEMA lego;
+
 -- themes
 
 create table lego.themes (
