@@ -9,32 +9,32 @@
 static intr_handle_t handle_console;
 
 // Decission Tree
-double predict(uint8_t *data)
+uint8_t predict(uint8_t *data)
 {
   uint8_t zeroCrossing = data[0];
   uint8_t maximum = data[1];
   uint8_t simetry = data[2];
 
-  if (maximum <= 50.5)
+  if (maximum <= 49)
   {
-    if (maximum <= 39.5)
+    if (maximum <= 39)
     {
       return 1;
     }
     else
     {
-      return simetry <= 95.5 ? 0 : 1;
+      return simetry <= 95 ? 0 : 1;
     }
   }
   else
   {
-    if (simetry <= 127.5)
+    if (simetry <= 126)
     {
-      return zeroCrossing <= 4.5 ? 0 : 2;
+      return zeroCrossing <= 4 ? 0 : 2;
     }
     else
     {
-      return simetry <= 214.5 ? 2 : 0;
+      return simetry <= 213 ? 2 : 0;
     }
   }
 }
