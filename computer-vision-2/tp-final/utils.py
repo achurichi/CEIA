@@ -2,10 +2,10 @@ import os
 import cv2
 
 
-def load_image(path, filename, grayscale=False):
+def load_image(path, filename, grayscale=False, rgb=False):
     flags = {"flags": cv2.IMREAD_GRAYSCALE} if grayscale else {}
     img = cv2.imread(os.path.join(path, filename), **flags)
-    if grayscale:
+    if grayscale or not rgb:
         return img
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
